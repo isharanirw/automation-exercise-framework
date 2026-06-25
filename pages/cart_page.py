@@ -23,9 +23,16 @@ class CartPage:
 
     def remove_first_item(self):
         self.remove_buttons.first.click()
+        # Wait for the item row to disappear
+        self.cart_product_names.first.wait_for(state="hidden", timeout=5000)
 
     def is_cart_empty(self):
-        return self.empty_cart_message.is_visible()
+        # Wait for empty cart message to appear
+        try:
+            self.empty_cart_message.wait_for(state="visible", timeout=5000)
+            return self.empty_cart_message.is_visible()
+        except Exception:
+            return False
 
     def proceed_to_checkout(self):
         self.proceed_to_checkout.click()

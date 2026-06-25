@@ -47,7 +47,6 @@ class TestProducts:
         product_page.continue_shopping()
         cart_page.navigate()
         cart_page.remove_first_item()
-        page.wait_for_timeout(1000)
         assert cart_page.is_cart_empty(), "Cart should be empty after removing item"
 
     def test_filter_products_by_category(self, page: Page):

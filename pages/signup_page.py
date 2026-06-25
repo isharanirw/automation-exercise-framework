@@ -55,10 +55,18 @@ class SignupPage:
         return self.account_created_text.is_visible()
 
     def continue_after_signup(self):
+        self.continue_button.wait_for(state="visible")
         self.continue_button.click()
+        # Wait for home page to load after registration
+        self.page.wait_for_load_state("domcontentloaded")
 
     def is_logged_in(self):
+        self.logged_in_text.wait_for(state="visible", timeout=5000)
         return self.logged_in_text.is_visible()
 
     def is_email_already_exists(self):
-        return self.email_exists_error.is_visible()
+        try:
+            self.email_exists_error.wait_for(state="visible", timeout=5000)
+            return self.email_exists_error.is_visible()
+        except Exception:
+            return False

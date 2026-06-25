@@ -13,6 +13,8 @@ class LoginPage:
 
     def navigate(self):
         self.page.goto(self.url)
+        self.page.wait_for_load_state("domcontentloaded")
+        self.login_email.wait_for(state="visible")
 
     def login(self, email, password):
         self.login_email.fill(email)

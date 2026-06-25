@@ -19,8 +19,12 @@ class ProductPage:
 
     def navigate(self):
         self.page.goto(self.url)
+        self.page.wait_for_load_state("domcontentloaded")
+        # Wait for search input to be ready
+        self.search_input.wait_for(state="visible")
 
     def search_product(self, keyword):
+        self.search_input.wait_for(state="visible")
         self.search_input.fill(keyword)
         self.search_button.click()
 
@@ -42,19 +46,27 @@ class ProductPage:
         # Wait for product detail heading to appear
         self.product_detail_name.wait_for(state="visible")
 
+
     def get_product_detail_name(self):
         return self.product_detail_name.text_content()
 
     def add_first_product_to_cart(self):
-        # Hover over first product to reveal the Add to cart button
         first_product = self.product_list.first
         first_product.hover()
         add_button = first_product.locator('a.add-to-cart').first
         add_button.wait_for(state="visible")
         add_button.click()
+        # Wait for the modal to appear
+        modal = self.page.locator('#cartModal')
+        modal.wait_for(state="visible", timeout=10000)
 
     def continue_shopping(self):
-        self.continue_shopping_button.click()
+        # Click inside the modal using a more specific locator
+        modal_button = self.page.locator('#cartModal button:has-text("Continue Shopping")')
+        modal_button.wait_for(state="visible", timeout=10000)
+        modal_button.click()
+        # Wait for modal to close
+        self.page.locator('#cartModal').wait_for(state="hidden", timeout=5000)
 
     def go_to_cart(self):
         self.view_cart_button.click()
